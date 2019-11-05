@@ -100,8 +100,9 @@ venv.bak/
 # mkdocs documentation
 /site
 
-# mypy
-.mypy_cache/
-local_variables.py
+# vscode stuff
 .vscode/settings.json
+
+# Data
+*.zip
 *.csv

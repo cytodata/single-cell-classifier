@@ -17,6 +17,7 @@ def downloadData(
 
     # Check if file already exist
     if os.path.exists(locationData):
+        print("file already exists. Nothing is downloaded")
         return
 
     # Make the path if is doesn't already exist

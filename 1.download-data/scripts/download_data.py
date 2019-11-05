@@ -13,7 +13,7 @@ def downloadData(
     """
     # Check if path goes to zipfile
     if not locationData.endswith(".zip"):
-        raise ValueError(f"The file path should go to a .zip file. Not {locationData}")
+        locationData = os.path.join(locationData, "fullData.zip")
 
     # Check if file already exist
     if os.path.exists(locationData):
@@ -21,10 +21,7 @@ def downloadData(
 
     # Make the path if is doesn't already exist
     path = os.path.split(locationData)[0]
-    print("path", path)
-    if not os.path.exists(path):
-        print("make path", path)
-        os.makedirs(path)
+    os.makedirs(path, exist_ok=True)
 
     print("Start downloading the data")
     # Download the zip from from the download link

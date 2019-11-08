@@ -1,7 +1,7 @@
 import urllib.request
 import shutil
 import os
-
+from .check_if_download_complete import checkIfDownloadComplete
 
 def downloadData(locationData: str, url: str):
     """
@@ -16,8 +16,12 @@ def downloadData(locationData: str, url: str):
 
     # Check if file already exist
     if os.path.exists(locationData):
-        print("file already exists. Nothing is downloaded")
-        return
+        fileComplete = checkIfDownloadComplete(locationData)
+        if fileComplete:
+            print("file already exists. Nothing is downloaded")
+            return
+        else:
+            print("Found file seems to be incomplete")
 
     # Make the path if is doesn't already exist
     path = os.path.split(locationData)[0]

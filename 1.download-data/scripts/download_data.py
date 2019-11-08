@@ -1,7 +1,9 @@
-import urllib.request
-import shutil
 import os
+import shutil
+import urllib.request
+
 from .check_if_download_complete import checkIfDownloadComplete
+
 
 def downloadData(locationData: str, url: str):
     """

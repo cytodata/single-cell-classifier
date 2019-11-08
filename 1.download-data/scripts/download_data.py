@@ -3,17 +3,16 @@ import shutil
 import os
 
 
-def downloadData(
-    locationData: str = "cytodata_2019_orig_challenge_data.zip",
-    url: str = r"https://ndownloader.figshare.com/files/18501824?private_link=f41918598b1ff5116825",
-):
+def downloadData(locationData: str, url: str):
     """
     locationData: The name of the zip file. 
     url: This is the download link. Pasting this link in your browser should tricker a download.
     """
     # Check if path goes to zipfile
     if not locationData.endswith(".zip"):
-        locationData = os.path.join(locationData, "cytodata_2019_orig_challenge_data.zip")
+        locationData = os.path.join(
+            locationData, "cytodata_2019_orig_challenge_data.zip"
+        )
 
     # Check if file already exist
     if os.path.exists(locationData):

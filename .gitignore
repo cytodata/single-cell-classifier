@@ -42,5 +42,4 @@ coverage.xml
 .vscode/settings.json
 
 # Data
-*.zip
-*.csv
+/data/*.zip

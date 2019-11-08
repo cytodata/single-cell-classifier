@@ -2,7 +2,10 @@
 
 Make sure you have python installed.
 
-Open your terminal to this location. Type python downloadData.py --downloadLocation [The path where you want to store your data]
+Open your terminal to this location. Type python downloadData.py  [The path where you want to store your data]
 
-example:
-C:\Users\user\git\single-cell-classifier\1.download-data>python downloadData.py --downloadLocation C:\Users\user\git\single-cell-classifier\data
+```bash
+# Navigate to this directory
+cd 1.download-data
+# Running this script will download all data in the `data` folder
+python downloadData.py

@@ -15,4 +15,4 @@ parser.add_argument(
 
 args = parser.parse_args()
 downloadUrl = r"https://ndownloader.figshare.com/files/18501824"
-downloadData(args.downloadLocation, args.downloadUrl)
+downloadData(args.downloadLocation, downloadUrl)

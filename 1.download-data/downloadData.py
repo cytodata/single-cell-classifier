@@ -1,7 +1,7 @@
-from scripts import downloadData
 import argparse
 import os
 
+from scripts import downloadData
 
 parser = argparse.ArgumentParser()
 

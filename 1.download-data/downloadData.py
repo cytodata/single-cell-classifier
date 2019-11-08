@@ -15,7 +15,7 @@ parser.add_argument(
 parser.add_argument(
     "--downloadUrl",
     type=str,
-    default=r"https://ndownloader.figshare.com/files/18501824?private_link=f41918598b1ff5116825",
+    default=r"https://ndownloader.figshare.com/files/18501824",
     dest="downloadUrl",
     help="The account name of the blobStorage where the validation data is stored",
 )

@@ -1,12 +1,14 @@
 from scripts import downloadData
 import argparse
+import os
+
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
     "--downloadLocation",
     type=str,
-    default="data",
+    default=os.path.join("data", "cytodata_2019_orig_challenge_data.zip"),
     dest="downloadLocation",
     help="The account name of the blobStorage where the validation data is stored",
 )

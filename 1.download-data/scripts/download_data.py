@@ -13,7 +13,7 @@ def downloadData(
     """
     # Check if path goes to zipfile
     if not locationData.endswith(".zip"):
-        locationData = os.path.join(locationData, "fullData.zip")
+        locationData = os.path.join(locationData, "cytodata_2019_orig_challenge_data.zip")
 
     # Check if file already exist
     if os.path.exists(locationData):

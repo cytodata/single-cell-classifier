@@ -4,7 +4,7 @@ import os
 
 
 def downloadData(
-    locationData: str = "temp.zip",
+    locationData: str = "cytodata_2019_orig_challenge_data.zip",
     url: str = r"https://ndownloader.figshare.com/files/18501824?private_link=f41918598b1ff5116825",
 ):
     """

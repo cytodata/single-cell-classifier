@@ -7,8 +7,8 @@ from .check_if_download_complete import checkIfDownloadComplete
 
 def downloadData(locationData: str, url: str):
     """
-    locationData: The name of the zip file. 
-    url: This is the download link. Pasting this link in your browser should tricker a download.
+    locationData: The name of the zip file.
+    url: This is the download link. Pasting this link in your browser should trigger a download.
     """
     # Check if path goes to zipfile
     if not locationData.endswith(".zip"):

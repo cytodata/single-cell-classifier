@@ -41,5 +41,5 @@ coverage.xml
 # vscode stuff
 .vscode/settings.json
 
-# Data
-/data/*.zip
+# Raw data
+/1.download-data/data/*

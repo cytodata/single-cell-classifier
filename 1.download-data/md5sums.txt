@@ -1,0 +1,4 @@
+4628f955067de990830075bd3a31e9b5  data/training_data.csv
+0514cfc238d0f4b710d336db1214898d  data/training.tar.gz
+c53da98165a299a4e61f05cb4636b346  data/validation_data.csv
+77f57bc89bc390bc47b43032bce9d75f  data/validation.tar.gz

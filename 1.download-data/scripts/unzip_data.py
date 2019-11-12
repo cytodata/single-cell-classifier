@@ -18,6 +18,9 @@ def unzipData(locationData: str):
             zip_fh.printdir()
             print("Extracting all files")
             zip_fh.extractall(path="data")
+
+        print("Deleting zip file")
+        os.remove(locationData)
     else:
         raise FileNotFoundError(
             "{} does not exist, download first".format(locationData)

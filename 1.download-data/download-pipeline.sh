@@ -6,4 +6,5 @@ set -e
 python downloadData.py --unzip
 
 # Confirm download integrity
+printf "Verifying md5sum download integrity\n"
 md5sum -c md5sums.txt

@@ -4,6 +4,11 @@
 # analysis modules, including machine learning applications.
 set -e
 
+# First, convert all notebooks to scripts
+jupyter nbconvert --to=script \
+  --FilesWriter.build_directory=scripts/nbconverted \
+  *.ipynb
+
 # Step 1: Randomly split training data into training and test sets
 jupyter nbconvert --to=html \
   --FilesWriter.build_directory=scripts/html \

@@ -42,4 +42,8 @@ coverage.xml
 .vscode/settings.json
 
 # Raw data
-/1.download-data/data/*
+1.download-data/data/*
+
+# Raw data, split (processed data included in repo)
+2.process-data/data/train.tsv.gz
+2.process-data/data/test.tsv.gz

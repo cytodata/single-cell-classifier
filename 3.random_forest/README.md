@@ -1,6 +1,8 @@
 # random forest
 
-Random forest, collection of random generated desicion trees, is a form of classifier. The classification always goes via a hard cut in a feature. This work well if all features are independed.
+A random forest, a collection of random generated decision trees, is a form of a classifier.
+The classification always goes via a hard cut in a feature.
+This work well if all features are independent.
 
 ## Naive Attempt
 

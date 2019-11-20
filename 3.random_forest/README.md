@@ -1,4 +1,4 @@
-# random forest
+# Random Forest
 
 A random forest, a collection of random generated decision trees, is a form of a classifier.
 The classification always goes via a hard cut in a feature.

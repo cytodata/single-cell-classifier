@@ -6,7 +6,7 @@ This work well if all features are independent.
 
 ## Naive Attempt
 
-Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) an estimator is trained on the [processed training data](../2.process-data/README.md).
+Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) we trained an estimator on the [processed training data](../2.process-data/README.md).
 
 ### parameters
 - n_estimators=1000 **(differ from default)**

@@ -36,6 +36,7 @@ When looking at the [most common classes](../2.process-data/results/target_count
 When we look at the next 3 most common classes most common class (adrenoceptor, DNA_intercalation, AMPA) we see very few predictions. Almost all of these images are labeled as one of the 3 dominated classes.
 There are a few classes (e.q. Ca2, Cdc25, eNos, rac1) are well predicted and seems to be easy cases.
 
-### future steps
+### Future Steps
+
 - [ ] Balance training data. The model seems to favor classes that are very dominate.  
 - [ ] parameter optimization. Try different parameters to find best solution

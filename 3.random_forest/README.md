@@ -8,7 +8,8 @@ This work well if all features are independent.
 
 Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) we trained an estimator on the [processed training data](../2.process-data/README.md).
 
-### parameters
+### Parameters
+
 - n_estimators=1000 **(differ from default)**
 - criterion=’gini’
 - max_depth=15 **(differ from default)**

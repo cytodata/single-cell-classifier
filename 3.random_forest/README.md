@@ -40,4 +40,4 @@ There are a few classes (e.q. Ca2, Cdc25, eNos, rac1) are well predicted and see
 ### Future Steps
 
 - [ ] Balance training data. The model seems to favor classes that are very dominate.  
-- [ ] parameter optimization. Try different parameters to find best solution
+- [ ] Parameter optimization. Try different parameters to find best solution

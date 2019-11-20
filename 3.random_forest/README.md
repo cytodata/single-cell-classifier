@@ -29,7 +29,10 @@ Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules
 
 ### Results
 
-The balance f1-score on the validation set is [0.328](scripts/html/random_forest.html). This is very low, but what is interesting is the [confusion matrix](scripts/html/random_forest.html). The prediction are dominated by 3 classes: dopaminereceptor, EGFR, ROCK. When looking at the [most common classes](../2.process-data/results/target_counts.tsv) we find the same 3 classes.
+The balanced f1-score on the validation set is [0.328](scripts/html/random_forest.html).
+This is very low, but what is interesting is the [confusion matrix](scripts/html/random_forest.html).
+The predictions are dominated by 3 classes: dopaminereceptor, EGFR, ROCK.
+When looking at the [most common classes](../2.process-data/results/target_counts.tsv) we find the same 3 classes.
 When we look at the next 3 most common classes most common class (adrenoceptor, DNA_intercalation, AMPA) we see very few predictions. Almost all of these images are labeled as one of the 3 dominated classes.
 There are a few classes (e.q. Ca2, Cdc25, eNos, rac1) are well predicted and seems to be easy cases.
 

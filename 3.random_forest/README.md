@@ -2,7 +2,7 @@
 
 Random forest, collection of random generated desicion trees, is a form of classifier. The classification always goes via a hard cut in a feature. This work well if all features are independed.
 
-## naive attempt
+## Naive Attempt
 
 Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) an estimator is trained on the [processed training data](../2.process-data/README.md).
 

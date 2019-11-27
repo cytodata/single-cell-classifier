@@ -2,18 +2,18 @@
 # coding: utf-8
 
 # # Process EBImage-based Features
-# 
+#
 # We extracted single-cell features from all images using [EBImage](https://github.com/aoles/EBImage).
 # These features were acquired from DNA and actin channels and represent various morphology phenotypes.
-# 
+#
 # Please view the [EBImage reference manual](https://bioconductor.org/packages/release/bioc/manuals/EBImage/man/EBImage.pdf) for a description of all features.
-# 
+#
 # Many of these features have large differences in distributions, are redundant (highly correlated with each other), have low variance, or have a large proportion of missing values.
-# 
+#
 # In this notebook, we use [pycytominer](https://github.com/cytomining/pycytominer) to select features and normalize training and test data used in downstream analyses.
-# 
+#
 # ## Processing Steps
-# 
+#
 # 1. Remove features that have high missingness
 #   * Remove features that have a proportion of missing values greater than 1%
 # 2. Remove redundant features (high correlation)
@@ -27,7 +27,7 @@
 # 4. Apply robust normalization
 #   * subtract median and divide by IQR
 #   * robust to outliers
-# 
+#
 # **Note:** Feature selection applied to the training set is used to select features in the test set, but the training and test sets are normalized separately.
 
 # In[1]:
@@ -44,7 +44,7 @@ from pycytominer.normalize import normalize
 
 
 file = os.path.join("data", "train.tsv.gz")
-train_df = pd.read_csv(file, sep='\t')
+train_df = pd.read_csv(file, sep="\t")
 
 print(train_df.shape)
 train_df.head()
@@ -70,7 +70,7 @@ train_feature_select_df = feature_select(
     corr_threshold=0.95,
     corr_method="pearson",
     freq_cut=0.01,
-    unique_cut=0.001
+    unique_cut=0.001,
 )
 
 
@@ -89,7 +89,9 @@ train_feature_select_df.head()
 
 
 file = os.path.join("data", "test.tsv.gz")
-test_df = pd.read_csv(file, sep='\t').reindex(train_feature_select_df.columns, axis='columns')
+test_df = pd.read_csv(file, sep="\t").reindex(
+    train_feature_select_df.columns, axis="columns"
+)
 
 print(test_df.shape)
 test_df.head()
@@ -101,9 +103,7 @@ test_df.head()
 
 
 train_normalize_df = normalize(
-    profiles=train_feature_select_df,
-    features=selected_features,
-    method="robustize"
+    profiles=train_feature_select_df, features=selected_features, method="robustize"
 )
 
 print(train_normalize_df.shape)
@@ -114,9 +114,7 @@ train_normalize_df.head()
 
 
 test_normalize_df = normalize(
-    profiles=test_df,
-    features=selected_features,
-    method="robustize"
+    profiles=test_df, features=selected_features, method="robustize"
 )
 
 print(test_normalize_df.shape)
@@ -136,8 +134,7 @@ pd.testing.assert_index_equal(train_normalize_df.columns, test_normalize_df.colu
 
 
 file = os.path.join("data", "train_processed.tsv.gz")
-train_normalize_df.to_csv(file, sep='\t', float_format="%.4f", index=False)
+train_normalize_df.to_csv(file, sep="\t", float_format="%.4f", index=False)
 
 file = os.path.join("data", "test_processed.tsv.gz")
-test_normalize_df.to_csv(file, sep='\t', float_format="%.4f", index=False)
-
+test_normalize_df.to_csv(file, sep="\t", float_format="%.4f", index=False)

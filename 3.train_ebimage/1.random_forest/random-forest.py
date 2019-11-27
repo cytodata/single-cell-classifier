@@ -1,4 +1,4 @@
-# %% Initialization 
+# %% Initialization
 import sys
 from pathlib import Path
 

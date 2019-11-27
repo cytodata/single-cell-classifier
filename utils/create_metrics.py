@@ -16,5 +16,5 @@ def create_metrics(prediction: list, true_y: list, save_location: str):
 
     create_confusion_matrix(prediction, true_y, os.path.join(save_location, new_run))
 
-    score = f1_score(true_y, prediction, average='macro')
+    score = f1_score(true_y, prediction, average="macro")
     add_score2excel(score, os.path.join(save_location, "all_scores.xlsx"))

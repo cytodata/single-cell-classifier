@@ -30,7 +30,7 @@ Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules
 
 ### Results
 
-The balanced f1-score on the validation set is [0.328 ± 0.0015 with n=5](results/all_scores.xlsx).
+The balanced f1-score on the validation set is [0.328 ± 0.0030 with n=6](results/all_scores.xlsx).
 This is very low, but what is interesting is the [confusion matrix](results/0/confusion_matrix.png).
 The predictions are dominated by 3 classes: dopaminereceptor, EGFR, ROCK.
 When looking at the [most common classes](../2.process-data/results/target_counts.tsv) we find the same 3 classes.

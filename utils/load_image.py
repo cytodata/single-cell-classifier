@@ -6,6 +6,7 @@ import numpy as np
 import os
 from pathlib import Path
 
+basefolder_loc = Path(__file__).parents[1]
 TARFILE = tarfile.open(
     os.path.join(basefolder_loc, "1.download-data", "data", "training.tar.gz"), "r:gz",
 )

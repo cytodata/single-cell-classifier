@@ -69,4 +69,4 @@ def get_all_images(dataframe):
         b = extracted_file.read()
         img = Image.open(BytesIO(b))
 
-        yield img, list(rows.cell_code)[0]
+        yield img, list(rows.cell_code)[0], target

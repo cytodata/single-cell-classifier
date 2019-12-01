@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 
 sys.path.append(str(basefolder_loc))
 from utils import create_metrics
@@ -25,9 +26,6 @@ def load_data(file_name="train_processed.tsv.gz"):
 
 
 # %% Training model
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV
-
 RFclf = RandomForestClassifier(n_estimators=1000, max_depth=15, random_state=None)
 X, Y = load_data("train_processed.tsv.gz")
 RFclf.fit(X, Y)

@@ -15,4 +15,4 @@ def add_score2excel(score: float, filename: str):
     n = len(resultDf.score)
 
     print(f"score is {mean} ± {2 * std} (2σ) with n = {n}")
-    resultDf.to_excel(filename)
+    resultDf.to_csv(filename, sep=",", index=False)

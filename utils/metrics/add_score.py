@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-def add_score2excel(score: float, filename: str):
+def add_score2csv(score: float, filename: str):
     try:
-        resultDf = pd.read_excel(filename, index_col=0)
+        resultDf = pd.read_csv(filename, index_col=0)
     except:
         resultDf = pd.DataFrame(columns=["score"])
 
@@ -15,4 +15,4 @@ def add_score2excel(score: float, filename: str):
     n = len(resultDf.score)
 
     print(f"score is {mean} ± {2 * std} (2σ) with n = {n}")
-    resultDf.to_csv(filename, sep=",", index=False)
+    resultDf.to_csv(filename, sep=",", index=True)

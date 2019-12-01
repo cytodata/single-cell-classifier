@@ -28,6 +28,13 @@ Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules
 - warm_start=False
 - class_weight=None
 
+### Experiment setup
+
+To find out how stable this model come to a result the script is run. 
+Every time the script is run another results in added to the list. 
+These results show what the performance is (the mean) and how stable it get there (the variance).
+This can be used to compare different models with each other and conclude if a model is a better fit or not.  
+
 ### Results
 
 The balanced f1-score on the validation set is [0.328 ± 0.00286 with 8 model initializations](results/all_scores.csv).

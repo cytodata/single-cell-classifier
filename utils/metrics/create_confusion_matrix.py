@@ -11,7 +11,7 @@ def create_confusion_matrix(prediction: list, true_y: list, save_location: str):
     """
     # Create confusion matrix in pandas
     results = pd.DataFrame({"prediction": prediction, "expected": true_y})
-    results["combined"] = results["prediction"] + "_" + results["expected"]
+    results = results.assign(combined=results.loc[:, "prediction"] + "_" results.loc[:, "expected"])
     confusion_matrix = results.pivot_table(
         values="combined",
         index="prediction",

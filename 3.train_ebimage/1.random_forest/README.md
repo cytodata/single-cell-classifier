@@ -33,7 +33,7 @@ Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules
 We run a script to determine model performance and model stability. 
 Every time the script is run another results in added to the list. 
 These results show what the performance is (the mean) and how stable it get there (the variance).
-This can be used to compare different models with each other and conclude if a model is a better fit or not.  
+This can be used to compare different models with each other and conclude if they have different stability. 
 
 ### Results
 

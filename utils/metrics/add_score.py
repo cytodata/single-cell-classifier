@@ -15,4 +15,4 @@ def add_score2csv(score: float, filename: str):
     n = len(resultDf.score)
 
     print(f"score is {mean} ± {2 * std} (2σ) with n = {n}")
-    resultDf.to_csv(filename, sep=",", index=True)
+    resultDf.to_csv(filename, sep=",", index=False)

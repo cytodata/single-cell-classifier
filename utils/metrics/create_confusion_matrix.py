@@ -27,4 +27,4 @@ def create_confusion_matrix(prediction: list, true_y: list, save_location: str):
     plt.savefig(os.path.join(save_location, "confusion_matrix.png"))
 
     # save pandas confusion_matrix
-    confusion_matrix.to_csv(os.path.join(save_location, "confusion_matrix.csv"))
+    confusion_matrix.to_csv(os.path.join(save_location, "confusion_matrix.csv"), index=False)

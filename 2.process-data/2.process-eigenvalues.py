@@ -42,6 +42,7 @@ def load_data(dataframe):
 
 
 # %% load data
+print("Start loading all images that match a row in train.tsv.gz")
 dataframe = pd.read_csv(
     os.path.join(basefolder_loc, "2.process-data", "data", "train.tsv.gz"), sep="\t"
 )

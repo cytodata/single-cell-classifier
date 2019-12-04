@@ -40,58 +40,63 @@ def load_data(dataframe):
 
     return np.array(all_images, dtype=np.uint8)
 
-
-# %% load data
-print("Start loading all images that match a row in train.tsv.gz")
-dataframe = pd.read_csv(
-    os.path.join(basefolder_loc, "2.process-data", "data", "train.tsv.gz"), sep="\t"
-)
-
-all_training_images = load_data(dataframe)
-# %% PCA transformation
+# Check if what files need to be created
 model_name = 'PCA_model.joblib'
-try:
-    pca = load(model_name)
+loc_training_eigenvalues = os.path.join(
+    basefolder_loc, "2.process-data", "data", "train_eigen_values.tsv.gz"
+)
+loc_test_eigenvalues = os.path.join(
+    basefolder_loc, "2.process-data", "data", "test_eigen_values.tsv.gz"
+)
+does_model_exists = os.path.isfile(model_name)
+does_training_eigen_exists = os.path.isfile(loc_training_eigenvalues)
+does_test_eigen_exists = os.path.isfile(loc_test_eigenvalues)
+
+# %% load training data
+if not does_model_exists or not does_training_eigen_exists:
+    print("Start loading all images that match a row in train.tsv.gz")
+    dataframe = pd.read_csv(
+        os.path.join(basefolder_loc, "2.process-data", "data", "train.tsv.gz"), sep="\t"
+    )
+    all_training_images = load_data(dataframe)
+# %% PCA transformation
+if does_model_exists:
     print("loaded model")
-except:
+    pca = load(model_name)
+else:
     print("model is not found. Training the model on training data")
     pca = PCA(n_components=2000)
     pca.fit(all_training_images)
     dump(clf, model_name)
 
 # %% transform training data
-images_pca = pca.transform(all_training_images)
+if not does_training_eigen_exists:
+    print("Start transforming training data")
+    images_pca = pca.transform(all_training_images)
+    train_df = pd.DataFrame(pd.np.column_stack([all_cell_codes, all_targets, images_pca]))
+    train_df.to_csv(loc_training_eigenvalues, sep="\t", float_format="%.6f", index=False)
 
-# %%
+# %% Validation data
+if does_test_eigen_exists:
+    print("Start loading all images that match a row in test.tsv.gz")
+    dataframe = pd.read_csv(
+        os.path.join(basefolder_loc, "2.process-data", "data", "test.tsv.gz"), sep="\t"
+    )
+
+    all_training_images = load_data(dataframe)
+
+    print("Start transforming test data")
+    images_pca = pca.transform(all_images)
+
+    test_df = pd.DataFrame(pd.np.column_stack([all_cell_codes, all_targets, images_pca]))
+    test_df.to_csv(loc_test_eigenvalues, sep="\t", float_format="%.6f", index=False)
+
+# %% show information lost
 plt.figure(1, figsize=(12, 8))
 
 plt.plot(pca.explained_variance_, linewidth=2)
 
+print(f"Total information {np.sum(pca.explained_variance_)}")
 plt.xlabel("Components")
 plt.ylabel("Explained Variaces")
 plt.show()
-
-# %% save eigen values
-file = os.path.join(
-    basefolder_loc, "2.process-data", "data", "train_eigen_values.tsv.gz"
-)
-train_df = pd.DataFrame(pd.np.column_stack([all_cell_codes, all_targets, images_pca]))
-train_df.to_csv(file, sep="\t", float_format="%.6f", index=False)
-
-# %% load data
-dataframe = pd.read_csv(
-    os.path.join(basefolder_loc, "2.process-data", "data", "test.tsv.gz"), sep="\t"
-)
-
-all_training_images = load_data(dataframe)
-
-# %% pca transformation of test
-images_pca = pca.transform(all_images)
-
-# %% save eigen values
-file = os.path.join(
-    basefolder_loc, "2.process-data", "data", "test_eigen_values.tsv.gz"
-)
-test_df = pd.DataFrame(pd.np.column_stack([all_cell_codes, all_targets, images_pca]))
-test_df.to_csv(file, sep="\t", float_format="%.6f", index=False)
-

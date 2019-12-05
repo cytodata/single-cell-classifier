@@ -41,7 +41,7 @@ def load_img(
     return img
 
 
-def get_all_images(dataframe: pd.dataframe) -> (Image, str, str):
+def get_all_images(dataframe: pd.DataFrame) -> (Image, str, str):
     """
     Creates a generator with all the image that match exactly one row in dataframe.
     The check is done based on target, cell_id, well, plate, field and replicate

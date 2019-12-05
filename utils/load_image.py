@@ -4,6 +4,8 @@ from io import BytesIO
 from PIL import Image
 import os
 from pathlib import Path
+import pandas as pd
+
 
 basefolder_loc = Path(__file__).parents[1]
 TARFILE = tarfile.open(

@@ -28,10 +28,17 @@ Using [Sklearn Random Forest Classifier](https://scikit-learn.org/stable/modules
 - warm_start=False
 - class_weight=None
 
+### Experiment setup
+
+We run a script to determine model performance and model stability. 
+Every time the script is run another results in added to the list. 
+These results show what the performance is (the mean) and how stable it get there (the variance).
+This can be used to compare different models with each other and conclude if they have different stability. 
+
 ### Results
 
-The balanced f1-score on the validation set is [0.328](scripts/html/random_forest.html).
-This is very low, but what is interesting is the [confusion matrix](scripts/html/random_forest.html).
+The balanced f1-score on the validation set is [0.328 ± 0.00286 with 8 model initializations](results/all_scores.csv).
+This is very low, but what is interesting is the [confusion matrix](results/0/confusion_matrix.png) (shown is one example initialization).
 The predictions are dominated by 3 classes: dopaminereceptor, EGFR, ROCK.
 When looking at the [most common classes](../2.process-data/results/target_counts.tsv) we find the same 3 classes.
 When we look at the next 3 most common classes most common class (adrenoceptor, DNA_intercalation, AMPA) we see very few predictions. Almost all of these images are labeled as one of the 3 dominated classes.

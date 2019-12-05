@@ -13,6 +13,7 @@ basefolder_loc = Path(__file__).parents[1]
 sys.path.append(str(basefolder_loc))
 from utils.load_image import get_all_images
 
+
 # %% load data
 def load_data(dataframe):
     image_generator = get_all_images(dataframe)
@@ -38,15 +39,18 @@ def load_data(dataframe):
         all_targets.append(data[2])
         all_cell_codes.append(data[1])
 
-    return np.array(all_images, dtype=np.uint8)
+    return np.array(all_images, dtype=np.uint8), all_targets, all_cell_codes
 
-# Check if what files need to be created
-model_name = 'PCA_model.joblib'
+
+# %% Check if what files need to be created
+model_loc = os.path.join(Path(__file__).parents[0], "models")
+os.makedirs(model_loc, exist_ok=True)
+model_name = os.path.join(model_loc, "PCA_model.joblib")
 loc_training_eigenvalues = os.path.join(
-    basefolder_loc, "2.process-data", "data", "train_eigen_values.tsv.gz"
+    Path(__file__).parents[0], "data", "train_eigen_values.tsv.gz"
 )
 loc_test_eigenvalues = os.path.join(
-    basefolder_loc, "2.process-data", "data", "test_eigen_values.tsv.gz"
+    Path(__file__).parents[0], "data", "test_eigen_values.tsv.gz"
 )
 does_model_exists = os.path.isfile(model_name)
 does_training_eigen_exists = os.path.isfile(loc_training_eigenvalues)
@@ -56,10 +60,16 @@ does_test_eigen_exists = os.path.isfile(loc_test_eigenvalues)
 if not does_model_exists or not does_training_eigen_exists:
     print("Start loading all images that match a row in train.tsv.gz")
     dataframe = pd.read_csv(
-        os.path.join(basefolder_loc, "2.process-data", "data", "train.tsv.gz"), sep="\t"
+        os.path.join(Path(__file__).parents[0], "data", "train.tsv.gz"),
+        sep="\t",
     )
-    all_training_images = load_data(dataframe)
-# %% PCA transformation
+    (
+        all_training_images,
+        all_training_targets,
+        all_training_cell_codes,
+    ) = load_data(dataframe)
+
+# %% Get PCA model
 if does_model_exists:
     print("loaded model")
     pca = load(model_name)
@@ -67,29 +77,46 @@ else:
     print("model is not found. Training the model on training data")
     pca = PCA(n_components=2000)
     pca.fit(all_training_images)
-    dump(clf, model_name)
+    dump(pca, model_name)
 
 # %% transform training data
 if not does_training_eigen_exists:
     print("Start transforming training data")
     images_pca = pca.transform(all_training_images)
-    train_df = pd.DataFrame(pd.np.column_stack([all_cell_codes, all_targets, images_pca]))
-    train_df.to_csv(loc_training_eigenvalues, sep="\t", float_format="%.6f", index=False)
-
-# %% Validation data
-if does_test_eigen_exists:
-    print("Start loading all images that match a row in test.tsv.gz")
-    dataframe = pd.read_csv(
-        os.path.join(basefolder_loc, "2.process-data", "data", "test.tsv.gz"), sep="\t"
+    train_df = pd.DataFrame(
+        pd.np.column_stack(
+            [all_training_cell_codes, all_training_targets, images_pca]
+        )
+    )
+    train_df.to_csv(
+        loc_training_eigenvalues, sep="\t", float_format="%.6f", index=False
     )
 
-    all_training_images = load_data(dataframe)
+# %% Validation data
+if not does_test_eigen_exists:
+    print("Start loading all images that match a row in test.tsv.gz")
+    dataframe = pd.read_csv(
+        os.path.join(Path(__file__).parents[0], "data", "test.tsv.gz"),
+        sep="\t",
+    )
+
+    (
+        all_validation_images,
+        all_validation_targets,
+        all_validation_cell_codes,
+    ) = load_data(dataframe)
 
     print("Start transforming test data")
-    images_pca = pca.transform(all_images)
+    images_pca = pca.transform(all_validation_images)
 
-    test_df = pd.DataFrame(pd.np.column_stack([all_cell_codes, all_targets, images_pca]))
-    test_df.to_csv(loc_test_eigenvalues, sep="\t", float_format="%.6f", index=False)
+    test_df = pd.DataFrame(
+        pd.np.column_stack(
+            [all_validation_cell_codes, all_validation_targets, images_pca]
+        )
+    )
+    test_df.to_csv(
+        loc_test_eigenvalues, sep="\t", float_format="%.6f", index=False
+    )
 
 # %% show information lost
 plt.figure(1, figsize=(12, 8))

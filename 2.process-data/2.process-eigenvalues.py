@@ -42,6 +42,21 @@ def load_data(dataframe):
     return np.array(all_images, dtype=np.uint8), all_targets, all_cell_codes
 
 
+# %% transforms data
+def transform_images(all_images, all_targets, all_cell_codes, location):
+    images_pca = pca.transform(all_images)
+
+    test_df = pd.DataFrame(
+        pd.np.column_stack([all_cell_codes, all_targets, images_pca]),
+        columns=["cell_codes", "targets"]
+        + [
+            f"eigen_value_{str(i).zfill(4)}"
+            for i in range(images_pca.shape[1])
+        ],
+    )
+    test_df.to_csv(location, sep="\t", float_format="%.6f", index=False)
+
+
 # %% Check if what files need to be created
 model_loc = os.path.join(Path(__file__).parents[0], "models")
 os.makedirs(model_loc, exist_ok=True)
@@ -82,14 +97,11 @@ else:
 # %% transform training data
 if not does_training_eigen_exists:
     print("Start transforming training data")
-    images_pca = pca.transform(all_training_images)
-    train_df = pd.DataFrame(
-        pd.np.column_stack(
-            [all_training_cell_codes, all_training_targets, images_pca]
-        )
-    )
-    train_df.to_csv(
-        loc_training_eigenvalues, sep="\t", float_format="%.6f", index=False
+    transform_images(
+        all_training_images,
+        all_training_targets,
+        all_training_cell_codes,
+        loc_training_eigenvalues,
     )
 
 # %% Validation data
@@ -107,17 +119,13 @@ if not does_test_eigen_exists:
     ) = load_data(dataframe)
 
     print("Start transforming test data")
-    images_pca = pca.transform(all_validation_images)
 
-    test_df = pd.DataFrame(
-        pd.np.column_stack(
-            [all_validation_cell_codes, all_validation_targets, images_pca]
-        )
+    transform_images(
+        all_validation_images,
+        all_validation_targets,
+        all_validation_cell_codes,
+        loc_test_eigenvalues,
     )
-    test_df.to_csv(
-        loc_test_eigenvalues, sep="\t", float_format="%.6f", index=False
-    )
-
 # %% show information lost
 plt.figure(1, figsize=(12, 8))
 

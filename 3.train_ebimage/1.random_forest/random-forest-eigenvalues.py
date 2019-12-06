@@ -18,8 +18,8 @@ data_dir = os.path.join(basefolder_loc, "2.process-data", "data")
 def load_data(file_name="train_eigen_values.tsv.gz"):
     file_loc = os.path.join(data_dir, file_name)
     data = pd.read_csv(file_loc, sep="\t")
-    X = np.array(data.drop(columns=["cell_code", "target"]))
-    Y = np.array(data.target)
+    X = np.array(data.drop(columns=["cell_codes", "targets"]))
+    Y = np.array(data.targets)
     return X, Y
 
 

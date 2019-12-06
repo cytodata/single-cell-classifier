@@ -3,8 +3,9 @@ import pandas as pd
 
 def add_score2csv(score: float, filename: str):
     try:
-        resultDf = pd.read_csv(filename, index_col=0)
-    except:
+        resultDf = pd.read_csv(filename, index_col=None)
+    except FileNotFoundError as not_found:
+        print(f" didn't found {not_found.filename} so making one")
         resultDf = pd.DataFrame(columns=["score"])
 
     newData = {"score": score}

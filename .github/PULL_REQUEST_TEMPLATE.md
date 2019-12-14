@@ -1,6 +1,6 @@
 *Thank you for making a pull request!*
 
-## First, please make sure to review the [contributing guidelines](.github/CONTRIBUTING.md).
+## First, please make sure to review the [contributing guidelines](CONTRIBUTING.md).
 
 ## [DELETE THIS LINE] Next, please fill in the following information to expedite code review:
 

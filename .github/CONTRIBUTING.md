@@ -11,7 +11,7 @@ The following document contains a set of guidelines for how to best contribute t
 
 ### Mission Statement
 
-We strive to foster a welcoming environment (see [`CODE_OF_CONDUCT.md`](.github/CODE_OF_CONDUCT.md)), where participants are encouraged to learn new things and exchange ideas freely.
+We strive to foster a welcoming environment (see [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)), where participants are encouraged to learn new things and exchange ideas freely.
 
 ### Scientific Goals
 

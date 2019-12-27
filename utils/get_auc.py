@@ -9,20 +9,26 @@ import matplotlib.pyplot as plt
 
 from .metrics import create_confusion_matrix, add_score2csv
 
-def get_auc(prediction: np.ndarray, true_y: list, average: str = "both",
-            save_location: str = "results/", plot_curve: bool = "true"):
+
+def get_auc(
+    prediction: np.ndarray,
+    true_y: list,
+    average: str = "both",
+    save_location: str = "results/",
+    plot_curve: bool = "true",
+):
     """
     Get Receiving operator characteristics area under the curve
     for a probabilistic multiclass prediction.
     Values for the 'average' parameter can be set to 'none', 'micro',
     'macro' or 'both' (default).
     """
-    
+
     # From Scikit learn KNeighborsClassifier's predict_proba methods:
     # "Classes are ordered by lexicographic order."
     # So we binarize the true labels similarly
-    binLabels = label_binarize(true_y, classes = np.sort(np.unique(true_y)))
-    
+    binLabels = label_binarize(true_y, classes=np.sort(np.unique(true_y)))
+
     # Make sure predictions include all labels
     assert binLabels.shape[1] == prediction.shape[1]
 
@@ -41,17 +47,24 @@ def get_auc(prediction: np.ndarray, true_y: list, average: str = "both",
     if average in ["micro", "both"]:
         # Compute micro-average ROC curve and ROC area
         fpr["micro"], tpr["micro"], _ = roc_curve(binLabels.ravel(), prediction.ravel())
-        roc_auc["micro"] = auc(fpr["micro"], tpr["micro"]) 
+        roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
 
         if plot_curve:
-            plt.plot(fpr["micro"], tpr["micro"],
-            label='micro-average ROC curve (area = {0:0.2f})'
-                  ''.format(roc_auc["micro"]),
-            color='deeppink', linestyle=':', linewidth=4)
+            plt.plot(
+                fpr["micro"],
+                tpr["micro"],
+                label="micro-average ROC curve (area = {0:0.2f})"
+                "".format(roc_auc["micro"]),
+                color="deeppink",
+                linestyle=":",
+                linewidth=4,
+            )
 
     if average in ["macro", "both"]:
         # First aggregate all false positive rates
-        all_fpr = np.unique(np.concatenate([fpr[i] for i in range(prediction.shape[1])]))
+        all_fpr = np.unique(
+            np.concatenate([fpr[i] for i in range(prediction.shape[1])])
+        )
 
         # Then interpolate all ROC curves at this points
         mean_tpr = np.zeros_like(all_fpr)
@@ -66,25 +79,36 @@ def get_auc(prediction: np.ndarray, true_y: list, average: str = "both",
         roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
 
         if plot_curve:
-            plt.plot(fpr["macro"], tpr["macro"],
-            label='macro-average ROC curve (area = {0:0.2f})'
-                  ''.format(roc_auc["macro"]),
-            color='navy', linestyle=':', linewidth=4)
+            plt.plot(
+                fpr["macro"],
+                tpr["macro"],
+                label="macro-average ROC curve (area = {0:0.2f})"
+                "".format(roc_auc["macro"]),
+                color="navy",
+                linestyle=":",
+                linewidth=4,
+            )
 
     if plot_curve:
-        colors = plt.cm.get_cmap('tab20')
-        for i, color in zip(range(prediction.shape[1]), 
-                            colors([x for x in range(prediction.shape[1])])):
-            plt.plot(fpr[i], tpr[i], color=color, lw=2,
-                     label='ROC curve of class {0} (area = {1:0.2f})'
-                     ''.format(i, roc_auc[i]))
+        colors = plt.cm.get_cmap("tab20")
+        for i, color in zip(
+            range(prediction.shape[1]), colors([x for x in range(prediction.shape[1])])
+        ):
+            plt.plot(
+                fpr[i],
+                tpr[i],
+                color=color,
+                lw=2,
+                label="ROC curve of class {0} (area = {1:0.2f})"
+                "".format(i, roc_auc[i]),
+            )
 
-        plt.plot([0, 1], [0, 1], 'k--', lw=2)
+        plt.plot([0, 1], [0, 1], "k--", lw=2)
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Some extension of Receiver operating characteristic to multi-class')
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
+        plt.title("Some extension of Receiver operating characteristic to multi-class")
         plt.legend(loc="lower right")
         plt.show()
 
@@ -92,4 +116,4 @@ def get_auc(prediction: np.ndarray, true_y: list, average: str = "both",
         score_path = os.path.join(save_location, "roc_auc_scores.csv")
         add_score2csv(roc_auc["macro"], score_path)
 
-    return(roc_auc)
+    return roc_auc

@@ -1,10 +1,13 @@
 import numpy as np
+import os
 
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import roc_curve, auc
 from scipy import interp
 
 import matplotlib.pyplot as plt
+
+from .metrics import create_confusion_matrix, add_score2csv
 
 def get_auc(prediction: np.ndarray, true_y: list, average: str = "both",
             save_location: str = "results/", plot_curve: bool = "true"):
@@ -84,5 +87,9 @@ def get_auc(prediction: np.ndarray, true_y: list, average: str = "both",
         plt.title('Some extension of Receiver operating characteristic to multi-class')
         plt.legend(loc="lower right")
         plt.show()
+
+    if average in ["macro", "both"]:
+        score_path = os.path.join(save_location, "roc_auc_scores.csv")
+        add_score2csv(roc_auc["macro"], score_path)
 
     return(roc_auc)

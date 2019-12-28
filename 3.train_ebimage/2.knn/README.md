@@ -26,9 +26,9 @@ This can be used to compare different models with each other and conclude if the
 
 ### Results
 
-The macro f1-score on the validation set is [0.300 ± 0.010, 10, 15, 25, 35 or 50](results/all_scores.csv). As for [random forest classifiers](../1.random_forest/README.md), this is very low but insightful. The [confusion matrix](results/0/confusion_matrix.png) (here shown for K = 5) shows that classes can be predicted with different accuracies. Because only the similarity (minkowski distance) to the cells in the training set are used, this shows that the overall morphological profiles provided by the EBImage analysis are representative of the underlying mechanism of action of the compounds used to treat the cells.
+The macro f1-score on the validation set is [0.300 ± 0.010, for 5, 10, 15, 25, 35 or 50 neighbors](results/all_scores.csv). As for [random forest classifiers](../1.random_forest/README.md), this is very low but insightful. The [confusion matrix](results/0/confusion_matrix.png) (here shown for K = 5) shows that classes can be predicted with different accuracies. Because only the similarity (minkowski distance) to the cells in the training set are used, this shows that the overall morphological profiles provided by the EBImage analysis are representative of the underlying mechanism of action of the compounds used to treat the cells.
 
 ### Future Steps
 
 - [ ] Balance training data. The model seems to favor classes that are very dominate.  
-- [ ] Parameter optimization. Try different parameters to find best solution
+- [ ] Parameter optimization. Try cross-validation scheme to select a single optimal value for K (the number of neighbors to consider).

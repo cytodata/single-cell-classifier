@@ -9,7 +9,8 @@ import pandas as pd
 
 basefolder_loc = Path(__file__).parents[1]
 TARFILE = tarfile.open(
-    os.path.join(basefolder_loc, "1.download-data", "data", "training.tar.gz"), "r:gz",
+    os.path.join(basefolder_loc, "1.download-data", "data", "training.tar.gz"),
+    "r:gz",
 )
 
 
@@ -41,12 +42,17 @@ def load_img(
     return img
 
 
-def get_all_images(dataframe: pd.DataFrame) -> (Image, str, str):
+def get_all_images(metadata: pd.DataFrame) -> (Image, str, str):
     """
-    Creates a generator with all the image that match exactly one row in dataframe.
-    The check is done based on target, cell_id, well, plate, field and replicate
+    metadata (pd.DataFrame): 
+        This is a list of the images that will be loaded.
+        Each row has target, cell_id, well, plate, field and replicate.
+        The data is compressed in /1.download-data/data/training.tar.gz
+        Every image in the data matching a row in metadata will be loaded
 
-    returns: img, cell_code, target
+    
+    returns: Generator (https://wiki.python.org/moin/Generators)
+        Each iteration has (img, cell_code, target)
     """
     for member in TARFILE.getmembers():
         path, name = os.path.split(member.name)
@@ -70,13 +76,13 @@ def get_all_images(dataframe: pd.DataFrame) -> (Image, str, str):
         ) = name.replace(".tiff", "").split("_")
         plateName = newPlateName.replace("S", "P")
 
-        rows = dataframe.loc[
-            (dataframe["target"] == target)
-            & (dataframe["cell_id"] == int(cell_id))
-            & (dataframe["well"] == wellName)
-            & (dataframe["plate"] == plateName)
-            & (dataframe["field"] == int(field))
-            & (dataframe["replicate"] == int(replicate))
+        rows = metadata.loc[
+            (metadata["target"] == target)
+            & (metadata["cell_id"] == int(cell_id))
+            & (metadata["well"] == wellName)
+            & (metadata["plate"] == plateName)
+            & (metadata["field"] == int(field))
+            & (metadata["replicate"] == int(replicate))
         ]
         if len(rows) == 0:
             continue

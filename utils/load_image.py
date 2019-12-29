@@ -19,10 +19,21 @@ def load_img(
     plate: str = "P1",
     cell_id: int = 1,
     replicate: int = 1,
-    wellName: str = "C10",
+    well: str = "C10",
     field: int = 1,
 ) -> Image:
     """
+    All the parameters can be found in the csv files:
+    - /1.download-data/data/training_data.csv
+    - /1.download-data/data/validation_data.csv
+    They match the headers
+
+    target (str): Name of the mechanism of action e.q. "adrenoceptor",
+    plate (str): Name of the plate e.q. "P1",
+    cell_id (int): Identification number of the cell e.q. 1,
+    replicate (int): Number of replication e.q. 1,
+    well (str): Name of the well relative to the wellplate e.q. "C10",
+    field (int): Number of the field e.q. 1,
     Find the single image that matches on all given parameters.
 
     Returns: image

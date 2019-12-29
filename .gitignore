@@ -39,7 +39,7 @@ coverage.xml
 /site
 
 # vscode stuff
-.vscode/settings.json
+.vscode/
 
 # Raw data
 1.download-data/data/*

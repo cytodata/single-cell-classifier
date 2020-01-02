@@ -39,7 +39,7 @@ coverage.xml
 /site
 
 # vscode stuff
-.vscode/settings.json
+.vscode/
 
 # Raw data
 1.download-data/data/*
@@ -47,3 +47,6 @@ coverage.xml
 # Raw data, split (processed data included in repo)
 2.process-data/data/train.tsv.gz
 2.process-data/data/test.tsv.gz
+2.process-data/data/test_eigen_values.tsv.gz
+2.process-data/data/train_eigen_values.tsv.gz
+2.process-data/models/PCA_model.joblib

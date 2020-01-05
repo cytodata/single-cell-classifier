@@ -2,7 +2,8 @@
 
 The following module processes downloaded data (from [`1.download-data`](1.download-data)).
 
-## Pycytominer
+## EBImage Feature Processing with Pycytominer
+
 We use [pycytominer](https://github.com/cytomining/pycytominer) to normalize and select meaningful morphology features in the EBImage profiles.
 
 **Note:** The processed output data of this module is already provided in [`2.process-data/data`](https://github.com/cytomining/pycytominer).

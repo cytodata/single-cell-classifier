@@ -9,7 +9,10 @@ We use [pycytominer](https://github.com/cytomining/pycytominer) to normalize and
 **Note:** The processed output data of this module is already provided in [`2.process-data/data`](https://github.com/cytomining/pycytominer).
 Therefore, the following pipeline is optional to reproduce the full analysis.
 
-## eigenvalues
+## Single Cell Image Processing
+
+### Eigenvalues
+
 We also use the eigenvalues of every image.
 This is done by interpreting an image as a vector (using flatten).
 The image is reduced for memory reasons:

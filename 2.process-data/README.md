@@ -29,7 +29,9 @@ Therefore, the following pipeline always needs to be run locally if one wants to
 
 ### Data exploration
 F-test on the eigen values reveals only 33 eigen values has a significant difference between at two of classes ([`see notebook`](2.process-data/2.1.analysing-eigen-values.ipynb)). This is done with a p-value of 0.0005. This low number gives use ```false positive = E(0.0005 * 2000) = E(1)```. 
-Looking at the ([`plots`](2.process-data/2.1.analysing-eigen-values.ipynb)) of 6 of these 33 eigen values we see these values cannot split any class very well. These are not a good signs for the value of eigen values.
+Looking at the of 2 of these 33 eigen values we see these values cannot split any class very well. These are not a good signs for the value of eigen values. Well some of the data (like eNOS) is more centered as the rest this is for splitting still hard. 
+
+![plots](/2.process-data/results/scatterplot_eigen_value_0034_eigen_value_0040.png)
 
 ## Instructions to Reproduce
 

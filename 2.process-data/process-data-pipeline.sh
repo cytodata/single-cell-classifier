@@ -24,4 +24,10 @@ jupyter nbconvert --to=html \
   --execute 2.process-data/1.process-ebimage-features.ipynb
 
 # Step 3: Process single cell into eigenvalues
-python 2.process-data/2.process-eigenvalues.py
+python 2.process-data/2.0.process-eigenvalues.py
+
+jupyter nbconvert --to=html \
+  --FilesWriter.build_directory=2.process-data/scripts/html \
+  --ExecutePreprocessor.kernel_name=python \
+  --ExecutePreprocessor.timeout=10000000 \
+  --execute 2.process-data/2.1.analysing-eigen-values.ipynb

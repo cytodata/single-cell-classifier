@@ -20,7 +20,7 @@ The image is reduced for memory reasons:
 - only the middle is used (cutting of mostly black borders and a total of 75% of the image)
 
 Next up the images are run through PCA model.
-The model is fitted using only the images of data/train.txv.gz.
+The model is fitted using only the images of data/train.tsv.gz.
 The save model reduces both training and validation data to eigenvalues.
 The first 2000 eigenvalues are saved in train_eigen_values.tsv.gz and test_eigen_values.tsv.gz
 One cropped image is 101 by 101 with 2 channels.

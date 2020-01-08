@@ -23,6 +23,11 @@ Next up the images are run through PCA model.
 The model is fitted using only the images of data/train.txv.gz.
 The save model reduces both training and validation data to eigenvalues.
 The first 2000 eigenvalues are saved in train_eigen_values.tsv.gz and test_eigen_values.tsv.gz
+One cropped image is 101 by 101 with 2 channels.
+This give use 20402 values.
+Exploring the information captures in the first 2000 eigenvalues hold 98.76% of the information.
+This number is a tenth of data but with almost all the information.
+![information graph](models/information_graph_0.9876.png)
 
 **Note:** The processed output data of this module is **NOT** provided in [`2.process-data/data`](/2.process-data/data`).
 Therefore, the following pipeline always needs to be run locally if one wants to use eigenvalues

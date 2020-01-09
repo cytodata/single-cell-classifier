@@ -59,8 +59,13 @@ def transform_images(all_images, all_targets, all_cell_codes, location):
 
 # %% Check if what files need to be created
 num_eigen_values = 2000
+
 model_loc = os.path.join(Path(__file__).parents[0], "models")
 os.makedirs(model_loc, exist_ok=True)
+
+figures_loc = os.path.join(Path(__file__).parents[0], "figures")
+os.makedirs(figures_loc, exist_ok=True)
+
 model_name = os.path.join(model_loc, "PCA_model.joblib")
 loc_training_eigenvalues = os.path.join(
     Path(__file__).parents[0], "data", "train_eigen_values.tsv.gz"
@@ -137,7 +142,7 @@ plt.xlabel("Components")
 plt.ylabel("Explained Variaces")
 plt.savefig(
     os.path.join(
-        model_loc,
+        figures_loc,
         f"information_graph_{np.sum(pca.explained_variance_ratio_):.4}.png",
     )
 )

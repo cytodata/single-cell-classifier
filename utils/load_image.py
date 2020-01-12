@@ -45,7 +45,7 @@ def load_img(
     """
     newPlateName = plate.replace("P", "S")
     extracted_file = TARFILE.extractfile(
-        f"training/{target}/211_11_17_X_Man_LOPAC_X5_LP_{newPlateName}_{replicate}_{wellName}_{field}_{cell_id}.tiff"
+        f"training/{target}/211_11_17_X_Man_LOPAC_X5_LP_{newPlateName}_{replicate}_{well}_{field}_{cell_id}.tiff"
     )
     b = extracted_file.read()
 

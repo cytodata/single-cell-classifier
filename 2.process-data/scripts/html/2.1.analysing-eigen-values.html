@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>0.random-test-split</title>
+<title>2.1.analysing-eigen-values</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13077,8 +13077,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Randomly-Split-Test-Partition-from-Training">Randomly Split Test Partition from Training<a class="anchor-link" href="#Randomly-Split-Test-Partition-from-Training">&#182;</a></h1><p>Randomly split out 10% of the training data into a testing partion to assess model performance during model development.</p>
-
+<h1 id="Analysing-the-eigen-values">Analysing the eigen values<a class="anchor-link" href="#Analysing-the-eigen-values">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -13088,10 +13087,9 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 
     </div>
@@ -13104,7 +13102,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;train_eigen_values.tsv.gz&quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13112,20 +13110,12 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Load-data-that-was-downloaded-in-the-1.download-data-module">Load data that was downloaded in the <code>1.download-data</code> module<a class="anchor-link" href="#Load-data-that-was-downloaded-in-the-1.download-data-module">&#182;</a></h2>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;1.download-data&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
-<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13142,58 +13132,6 @@ div#notebook {
 
 
 
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;cytodata_2019_orig_challenge_data.zip&#39;,
- &#39;training.tar.gz&#39;,
- &#39;training_data.csv&#39;,
- &#39;validation.tar.gz&#39;,
- &#39;validation_data.csv&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s2">&quot;training_data.csv&quot;</span><span class="p">)</span>
-<span class="n">full_train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">train_file</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">full_train_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">full_train_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(51267, 123)
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[4]:</div>
-
-
-
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
 <style scoped>
@@ -13213,153 +13151,153 @@ div#notebook {
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>cell_code</th>
-      <th>cell_id</th>
-      <th>plate</th>
-      <th>replicate</th>
-      <th>well</th>
-      <th>field</th>
-      <th>actin.s.area</th>
-      <th>actin.s.perimeter</th>
-      <th>actin.s.radius.mean</th>
-      <th>actin.s.radius.sd</th>
+      <th>cell_codes</th>
+      <th>targets</th>
+      <th>eigen_value_0000</th>
+      <th>eigen_value_0001</th>
+      <th>eigen_value_0002</th>
+      <th>eigen_value_0003</th>
+      <th>eigen_value_0004</th>
+      <th>eigen_value_0005</th>
+      <th>eigen_value_0006</th>
+      <th>eigen_value_0007</th>
       <th>...</th>
-      <th>DNA.h.ent.s3</th>
-      <th>DNA.h.dva.s3</th>
-      <th>DNA.h.den.s3</th>
-      <th>DNA.h.f12.s3</th>
-      <th>DNA.h.f13.s3</th>
-      <th>dist.10.nn</th>
-      <th>dist.20.nn</th>
-      <th>dist.30.nn</th>
-      <th>nuclear.displacement</th>
-      <th>target</th>
+      <th>eigen_value_1990</th>
+      <th>eigen_value_1991</th>
+      <th>eigen_value_1992</th>
+      <th>eigen_value_1993</th>
+      <th>eigen_value_1994</th>
+      <th>eigen_value_1995</th>
+      <th>eigen_value_1996</th>
+      <th>eigen_value_1997</th>
+      <th>eigen_value_1998</th>
+      <th>eigen_value_1999</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>OaJHcDs2kh</td>
-      <td>1</td>
-      <td>P1</td>
-      <td>1</td>
-      <td>C10</td>
-      <td>1</td>
-      <td>579</td>
-      <td>90</td>
-      <td>13.942759</td>
-      <td>4.352958</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>128.889522</td>
-      <td>178.595764</td>
-      <td>207.187370</td>
-      <td>5.938882</td>
       <td>adrenoceptor</td>
+      <td>-673.376005</td>
+      <td>226.999512</td>
+      <td>19.856234</td>
+      <td>103.444984</td>
+      <td>0.996551</td>
+      <td>12.435002</td>
+      <td>-34.196611</td>
+      <td>50.171730</td>
+      <td>...</td>
+      <td>0.256675</td>
+      <td>0.036327</td>
+      <td>-1.371034</td>
+      <td>0.522680</td>
+      <td>0.451433</td>
+      <td>0.410545</td>
+      <td>0.766067</td>
+      <td>-0.489929</td>
+      <td>-1.232571</td>
+      <td>-0.181984</td>
     </tr>
     <tr>
       <th>1</th>
       <td>nwLFF4l070</td>
-      <td>2</td>
-      <td>P1</td>
-      <td>1</td>
-      <td>C10</td>
-      <td>1</td>
-      <td>1132</td>
-      <td>136</td>
-      <td>20.179007</td>
-      <td>4.583255</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>79.885304</td>
-      <td>123.697473</td>
-      <td>190.598760</td>
-      <td>0.478024</td>
       <td>adrenoceptor</td>
+      <td>-353.281628</td>
+      <td>67.610234</td>
+      <td>40.509354</td>
+      <td>36.968020</td>
+      <td>-117.899643</td>
+      <td>-15.106895</td>
+      <td>26.007932</td>
+      <td>16.742913</td>
+      <td>...</td>
+      <td>3.430432</td>
+      <td>3.290681</td>
+      <td>-0.196751</td>
+      <td>-3.199812</td>
+      <td>-1.804525</td>
+      <td>0.431745</td>
+      <td>0.362372</td>
+      <td>-1.270252</td>
+      <td>0.900353</td>
+      <td>0.634628</td>
     </tr>
     <tr>
       <th>2</th>
       <td>JU4SIplWZ7</td>
-      <td>3</td>
-      <td>P1</td>
-      <td>1</td>
-      <td>C10</td>
-      <td>1</td>
-      <td>736</td>
-      <td>99</td>
-      <td>15.209404</td>
-      <td>2.408709</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>64.370636</td>
-      <td>88.931673</td>
-      <td>127.452918</td>
-      <td>3.928325</td>
       <td>adrenoceptor</td>
+      <td>-453.525170</td>
+      <td>-20.210653</td>
+      <td>-8.798432</td>
+      <td>-114.629762</td>
+      <td>23.357298</td>
+      <td>-69.579370</td>
+      <td>183.690544</td>
+      <td>91.272990</td>
+      <td>...</td>
+      <td>0.428241</td>
+      <td>2.698377</td>
+      <td>-1.660676</td>
+      <td>-2.651767</td>
+      <td>-0.562801</td>
+      <td>0.601309</td>
+      <td>-0.641914</td>
+      <td>1.162770</td>
+      <td>1.232496</td>
+      <td>0.530883</td>
     </tr>
     <tr>
       <th>3</th>
       <td>pqkTwaHa2L</td>
-      <td>4</td>
-      <td>P1</td>
-      <td>1</td>
-      <td>C10</td>
-      <td>1</td>
-      <td>611</td>
-      <td>92</td>
-      <td>14.398528</td>
-      <td>3.662234</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>87.536494</td>
-      <td>121.879169</td>
-      <td>160.752674</td>
-      <td>3.336081</td>
       <td>adrenoceptor</td>
+      <td>-109.195103</td>
+      <td>-450.929925</td>
+      <td>10.205896</td>
+      <td>-232.571440</td>
+      <td>145.289635</td>
+      <td>-88.680688</td>
+      <td>-93.271277</td>
+      <td>51.418426</td>
+      <td>...</td>
+      <td>2.666084</td>
+      <td>5.704673</td>
+      <td>0.720760</td>
+      <td>-3.524865</td>
+      <td>-0.374867</td>
+      <td>2.277353</td>
+      <td>-7.823618</td>
+      <td>-0.688071</td>
+      <td>3.111128</td>
+      <td>0.099316</td>
     </tr>
     <tr>
       <th>4</th>
       <td>pB2BlQoW94</td>
-      <td>5</td>
-      <td>P1</td>
-      <td>1</td>
-      <td>C10</td>
-      <td>1</td>
-      <td>585</td>
-      <td>93</td>
-      <td>14.030675</td>
-      <td>3.408844</td>
-      <td>...</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>105.866735</td>
-      <td>142.023858</td>
-      <td>182.990012</td>
-      <td>2.343776</td>
       <td>adrenoceptor</td>
+      <td>-559.953099</td>
+      <td>-13.435366</td>
+      <td>47.596790</td>
+      <td>64.147829</td>
+      <td>124.439161</td>
+      <td>41.770136</td>
+      <td>-94.237554</td>
+      <td>11.198108</td>
+      <td>...</td>
+      <td>-1.652867</td>
+      <td>-0.345678</td>
+      <td>-1.024346</td>
+      <td>-1.980020</td>
+      <td>-1.001250</td>
+      <td>0.668047</td>
+      <td>1.713858</td>
+      <td>0.389432</td>
+      <td>-0.276629</td>
+      <td>-0.442717</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 123 columns</p>
+<p>5 rows × 2002 columns</p>
 </div>
 </div>
 
@@ -13372,50 +13310,90 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Split-data-and-write-to-file">Split data and write to file<a class="anchor-link" href="#Split-data-and-write-to-file">&#182;</a></h2>
+<h2 id="Scatter-plot-of-the-first-2-dimensions">Scatter plot of the first 2 dimensions<a class="anchor-link" href="#Scatter-plot-of-the-first-2-dimensions">&#182;</a></h2>
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_targets</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">sample_per_class</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="n">small_train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">train_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="n">targets_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_targets</span><span class="p">):</span>
+    <span class="n">targets_mapping</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+    <span class="n">small_train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">small_train_data</span><span class="p">,</span> <span class="n">train_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">train_data</span><span class="o">.</span><span class="n">targets</span> <span class="o">==</span> <span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">sample_per_class</span><span class="p">)])</span>
+
+<span class="n">color</span> <span class="o">=</span> <span class="n">small_train_data</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">targets_mapping</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="p">,</span> <span class="n">test_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">full_train_df</span><span class="p">,</span>
-                                     <span class="n">test_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                                     <span class="n">stratify</span><span class="o">=</span><span class="n">full_train_df</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
-                                     <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+
+<span class="k">def</span> <span class="nf">create_scatter_plot</span><span class="p">(</span>
+    <span class="n">save_location</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">eigenvalue1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">eigenvalue2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">sample_per_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="p">):</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">colormap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;tab20&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_targets</span><span class="p">):</span>
+        <span class="n">targets_mapping</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="n">small_train_data</span> <span class="o">=</span> <span class="n">train_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">train_data</span><span class="o">.</span><span class="n">targets</span> <span class="o">==</span> <span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">sample_per_class</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">small_train_data</span><span class="p">[</span><span class="s2">&quot;eigen_value_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">eigenvalue1</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">small_train_data</span><span class="p">[</span><span class="s2">&quot;eigen_value_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">eigenvalue2</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">colormap</span><span class="p">(</span><span class="n">idx</span><span class="p">)])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;tab20&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Classes&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_location</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;scatterplot_eigen_value_{str(eigenvalue1).zfill(4)}_eigen_value_{str(eigenvalue2).zfill(4)}.png&quot;</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="F-test">F-test<a class="anchor-link" href="#F-test">&#182;</a></h1><p>The f-test (ANOVA) calculates if all classes have the same mean value</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;train.tsv.gz&quot;</span><span class="p">)</span>
-<span class="n">train_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.4f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="kn">import</span> <span class="n">f_classif</span>
 
-<span class="n">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;test.tsv.gz&quot;</span><span class="p">)</span>
-<span class="n">test_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.4f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
+<span class="n">minimum_p</span> <span class="o">=</span> <span class="mf">0.0005</span>
 
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">train_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">test_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">fvalues</span><span class="p">,</span> <span class="n">pvalues</span> <span class="o">=</span> <span class="n">f_classif</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cell_codes&#39;</span><span class="p">,</span> <span class="s1">&#39;targets&#39;</span><span class="p">]),</span> <span class="n">train_data</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span>
+<span class="n">independed_eigen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pvalues</span> <span class="o">&lt;</span> <span class="n">minimum_p</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">independed_eigen</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13432,8 +13410,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>(46140, 123)
-(5127, 123)
+<pre>[  0   1   4   5   8  10  12  20  22  24  25  31  32  33  34  40  41  42
+  43  52  53  54  56  73  74  75  76  79  80 119 120 192 295]
 </pre>
 </div>
 </div>
@@ -13444,155 +13422,17 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">target_count_df</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">train_df</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">test_df</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()),</span>
-        <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
-    <span class="p">)</span>
-<span class="p">)</span>
-
-<span class="n">target_count_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;train_counts&quot;</span><span class="p">,</span> <span class="s2">&quot;test_counts&quot;</span><span class="p">]</span>
-
-<span class="n">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">,</span> <span class="s2">&quot;target_counts.tsv&quot;</span><span class="p">)</span>
-<span class="n">target_count_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">target_count_df</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">independed_eigen</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">independed_eigen</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">create_scatter_plot</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">,</span> <span class="n">independed_eigen</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">independed_eigen</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">create_scatter_plot</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">,</span> <span class="n">independed_eigen</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">independed_eigen</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[8]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>train_counts</th>
-      <th>test_counts</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>dopaminereceptor</th>
-      <td>4620</td>
-      <td>513</td>
-    </tr>
-    <tr>
-      <th>EGFR</th>
-      <td>4563</td>
-      <td>507</td>
-    </tr>
-    <tr>
-      <th>ROCK</th>
-      <td>4437</td>
-      <td>493</td>
-    </tr>
-    <tr>
-      <th>adrenoceptor</th>
-      <td>3466</td>
-      <td>385</td>
-    </tr>
-    <tr>
-      <th>DNA_intercalation</th>
-      <td>3450</td>
-      <td>383</td>
-    </tr>
-    <tr>
-      <th>AMPA</th>
-      <td>3442</td>
-      <td>382</td>
-    </tr>
-    <tr>
-      <th>CDK</th>
-      <td>3288</td>
-      <td>365</td>
-    </tr>
-    <tr>
-      <th>TopoII</th>
-      <td>3199</td>
-      <td>356</td>
-    </tr>
-    <tr>
-      <th>Tubulin</th>
-      <td>2934</td>
-      <td>326</td>
-    </tr>
-    <tr>
-      <th>DNAMetabolism</th>
-      <td>2626</td>
-      <td>292</td>
-    </tr>
-    <tr>
-      <th>MEK</th>
-      <td>2276</td>
-      <td>253</td>
-    </tr>
-    <tr>
-      <th>cellcycle</th>
-      <td>2189</td>
-      <td>243</td>
-    </tr>
-    <tr>
-      <th>Ca2</th>
-      <td>1948</td>
-      <td>217</td>
-    </tr>
-    <tr>
-      <th>cMyc</th>
-      <td>1147</td>
-      <td>128</td>
-    </tr>
-    <tr>
-      <th>eNOS</th>
-      <td>1122</td>
-      <td>125</td>
-    </tr>
-    <tr>
-      <th>rac1</th>
-      <td>810</td>
-      <td>90</td>
-    </tr>
-    <tr>
-      <th>Cdc25</th>
-      <td>623</td>
-      <td>69</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 

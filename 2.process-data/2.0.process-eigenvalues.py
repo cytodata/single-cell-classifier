@@ -58,8 +58,14 @@ def transform_images(all_images, all_targets, all_cell_codes, location):
 
 
 # %% Check if what files need to be created
+num_eigen_values = 2000
+
 model_loc = os.path.join(Path(__file__).parents[0], "models")
 os.makedirs(model_loc, exist_ok=True)
+
+figures_loc = os.path.join(Path(__file__).parents[0], "figures")
+os.makedirs(figures_loc, exist_ok=True)
+
 model_name = os.path.join(model_loc, "PCA_model.joblib")
 loc_training_eigenvalues = os.path.join(
     Path(__file__).parents[0], "data", "train_eigen_values.tsv.gz"
@@ -90,7 +96,7 @@ if does_model_exists:
     pca = load(model_name)
 else:
     print("model is not found. Training the model on training data")
-    pca = PCA(n_components=2000)
+    pca = PCA(n_components=num_eigen_values)
     pca.fit(all_training_images)
     dump(pca, model_name)
 
@@ -129,9 +135,15 @@ if not does_test_eigen_exists:
 # %% show information lost
 plt.figure(1, figsize=(12, 8))
 
-plt.plot(pca.explained_variance_, linewidth=2)
+plt.plot(pca.explained_variance_ratio_, linewidth=2)
 
-print(f"Total information {np.sum(pca.explained_variance_)}")
+print(f"Total information {np.sum(pca.explained_variance_ratio_):.4}")
 plt.xlabel("Components")
 plt.ylabel("Explained Variaces")
-plt.show()
+plt.savefig(
+    os.path.join(
+        figures_loc,
+        f"information_graph_{np.sum(pca.explained_variance_ratio_):.4}.png",
+    )
+)
+plt.close()

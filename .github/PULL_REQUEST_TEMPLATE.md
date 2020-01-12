@@ -1,6 +1,8 @@
 *Thank you for making a pull request!*
 
-## [DELETE THIS LINE] Please fill in the following information to expedite code review:
+## First, please make sure to review the [contributing guidelines](CONTRIBUTING.md).
+
+## [DELETE THIS LINE] Next, please fill in the following information to expedite code review:
 
 The following pull request adds, fixes, and/or modifies:
 

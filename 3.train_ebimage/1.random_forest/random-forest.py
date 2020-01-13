@@ -26,7 +26,7 @@ def load_data(file_name="train_processed.tsv.gz"):
 
 
 # %% Training model
-RFclf = RandomForestClassifier(n_estimators=1000, max_depth=15, random_state=None)
+RFclf = RandomForestClassifier(n_estimators=100)
 X, Y = load_data("train_processed.tsv.gz")
 RFclf.fit(X, Y)
 
@@ -35,5 +35,5 @@ valX, valY = load_data("test_processed.tsv.gz")
 prediction = RFclf.predict(valX)
 
 create_metrics(
-    prediction, valY, os.path.join(os.path.join(os.path.dirname(__file__)), "results")
+    prediction, valY, os.path.join(os.path.join(os.path.dirname(__file__)), "results_ebimage")
 )

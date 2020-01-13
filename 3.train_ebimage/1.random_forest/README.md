@@ -76,9 +76,11 @@ For this experiment we only take the [significant eigen values](../2.process-dat
 The balanced f1-score on the validation set is [0.336 ± 0.0071 with 21 model initializations](results_ebimage+selected_eigenvalue/all_scores.csv).
 Applying a student-t on the results of ebimage and these we get a p-value of 3.111e-13.
 Meaning ebimage without the extra eigen values score significant better.
+Comparing the best confusion matrix of the ebimage and selected eigen values + ebimage,
+we see strong correlation with some only Ca2 as noteworthy better with eigen values + ebimage.
 
-![confusion matrix](results_ebimage+selected_eigenvalue/0/confusion_matrix.png)
-Confusion matrix 0 of eigen values
+![confusion matrix](results_ebimage+selected_eigenvalue/3/confusion_matrix.png)
+Confusion matrix 3 of eigen values
 
 ### Future Steps
 

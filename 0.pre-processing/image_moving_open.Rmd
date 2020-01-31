@@ -23,25 +23,25 @@ validation %>% rowwise() %>% do(copy_val(.))
 ## Second we copy the files for single cell validation over to their home
 
 ```{r copy_the_validation_files}
-training<-read_delim(file = "training_file_translations.txt",delim="\t") 
+training <- read_delim(file = "training_file_translations.txt",delim = "\t") 
 
-copy_val<-function(x){
+copy_val <- function(x){
   file.copy(x$old_name, x$new_name)
-  return(data_frame("done"=TRUE))
+  return(data_frame("done" = TRUE))
 }
 
-for(i in training$target %>% unique() ){
+for (i in training$target %>% unique() ) {
   dir.create(paste0("/data/single_cell_imagery/training/",i))
 }
 
 training %>%  rowwise() %>% do(copy_val(.))
 
 
-for(i in training$target %>% unique() ){
+for (i in training$target %>% unique() ) {
   dir.create(paste0("/data/single_cell_imagery/small_training/",i))
 }
 
-training %>% group_by(target) %>% do(.[sample(1:nrow(.),600),]) %>% mutate(new_name=gsub("(.+)training(.+)","\\1small_training\\2",new_name)) %>%  rowwise() %>% do(copy_val(.))
+training %>% group_by(target) %>% do(.[sample(1:nrow(.),600),]) %>% mutate(new_name = gsub("(.+)training(.+)","\\1small_training\\2",new_name)) %>%  rowwise() %>% do(copy_val(.))
 
 
 ```

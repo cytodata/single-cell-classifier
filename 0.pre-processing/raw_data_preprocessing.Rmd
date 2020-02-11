@@ -31,7 +31,7 @@ annotations<-read_delim("compund_annotations.txt",delim = "\t")
 
 #filter for empirically found easy to analyze classes and get the corresponding well and plate information
 
-I purposefully selected onyl a subset of classes known to be phenotypically mostly distinct and that we know from other screens worked well.
+I purposefully selected only a subset of classes known to be phenotypically mostly distinct and that we know from other screens worked well.
 
 Likewise we only employ data from the wild-type cell line here.
 
@@ -191,6 +191,5 @@ prediction %>% select(-prediction) %>% write_delim("ground_truth_real.csv",delim
 prediction %>% select(-truth) %>% write_delim("test_analysis.csv",delim = ",")
 
 ```
-
 
 

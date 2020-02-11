@@ -191,5 +191,3 @@ prediction %>% select(-prediction) %>% write_delim("ground_truth_real.csv",delim
 prediction %>% select(-truth) %>% write_delim("test_analysis.csv",delim = ",")
 
 ```
-
-

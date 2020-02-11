@@ -21,7 +21,7 @@ test_db <- src_postgres(
 
 ```
 
-#Get compund annoations
+# Get compound annotations
 
 ```{r annotations}
 

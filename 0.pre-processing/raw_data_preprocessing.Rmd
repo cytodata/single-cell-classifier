@@ -25,7 +25,7 @@ test_db <- src_postgres(
 
 ```{r annotations}
 
-annotations<-read_delim("compund_annotations.txt",delim = "\t")
+annotations <- read_delim("compund_annotations.txt",delim = "\t")
 
 ```
 
@@ -37,31 +37,31 @@ Likewise we only employ data from the wild-type cell line here.
 
 ```{r}
 
-easy_classes<-c("adrenoceptor","dopamine receptor","MEK","Tubulin","Ca2+","Cdc25","rac1","eNOS","Topo II","AMPA","c-Myc","cell cycle","DNA_intercalation","EGFR","IGF-1 RTK","AMPA","CDK","DNA Metabolism","ROCK")
+easy_classes <- c("adrenoceptor","dopamine receptor","MEK","Tubulin","Ca2+","Cdc25","rac1","eNOS","Topo II","AMPA","c-Myc","cell cycle","DNA_intercalation","EGFR","IGF-1 RTK","AMPA","CDK","DNA Metabolism","ROCK")
 
 
-wells_of_interest<-annotations %>% 
+wells_of_interest <- annotations %>% 
   select(PlateName,Well,Selectivity_updated) %>% 
   group_by(Selectivity_updated) %>% 
   drop_na() %>% 
   filter(Selectivity_updated %in% easy_classes) %>%
-  mutate(Well=gsub(pattern = "(\\w)0(\\d)",replacement ="\\1\\2" ,x = Well)) %>% 
+  mutate(Well = gsub(pattern = "(\\w)0(\\d)",replacement = "\\1\\2" ,x = Well)) %>% 
   do(head(.,5)) %>%
   distinct() %>% 
   ungroup() %>% 
   unite(mywell,PlateName,Well)
 
-interesting<-wells_of_interest  %>% pull(mywell) %>% unique()
+interesting <- wells_of_interest  %>% pull(mywell) %>% unique()
 
 
-annotations_selected<-annotations %>% 
+annotations_selected <- annotations %>% 
   select(PlateName,Well,Selectivity_updated) %>% 
   group_by(Selectivity_updated) %>% 
   drop_na() %>% 
   do(head(.,5)) %>%
   filter(Selectivity_updated %in% easy_classes) %>%
-  mutate(Well=gsub(pattern = "(\\w)0(\\d)",replacement ="\\1\\2" ,x = Well)) %>% 
-  rename(plate=PlateName,well=Well,target=Selectivity_updated)
+  mutate(Well = gsub(pattern = "(\\w)0(\\d)",replacement = "\\1\\2" ,x = Well)) %>% 
+  rename(plate = PlateName,well = Well,target = Selectivity_updated)
 
 
 ```
@@ -74,7 +74,7 @@ I used a database interface but I would also share the csv file here. Maybe for 
 #complete_singlecell<-test_db %>% tbl("HC1047_single_cell_V1") %>% filter(plate_well %in% interesting) %>% collect(n=Inf)
 #complete_singlecell %>% write_delim("complete_singlecell_data_cytodata2019.csv",delim = ",")
 
-complete_singlecell<-read_delim("complete_singlecell_data_cytodata2019.csv",delim = ",")
+complete_singlecell <- read_delim("complete_singlecell_data_cytodata2019.csv",delim = ",")
 
 ```
 
@@ -82,12 +82,12 @@ complete_singlecell<-read_delim("complete_singlecell_data_cytodata2019.csv",deli
 
 ```{r}
 
-complete_singlecell<-complete_singlecell %>% left_join(annotations_selected)
+complete_singlecell <- complete_singlecell %>% left_join(annotations_selected)
 
 #create unique barcodes for each single cell measured by the row in the single cell dataframe
-rand_strings<-stringi::stri_rand_strings(nrow(complete_singlecell), 10, pattern = "[A-Za-z0-9]") %>% unique()
+rand_strings <- stringi::stri_rand_strings(nrow(complete_singlecell), 10, pattern = "[A-Za-z0-9]") %>% unique()
 
-complete_singlecell$cell_code<-rand_strings
+complete_singlecell$cell_code <- rand_strings
 
 ```
 
@@ -97,19 +97,29 @@ complete_singlecell$cell_code<-rand_strings
 
 ```{r}
 
-complete_singlecell %<>% group_by(target) %>% mutate(set_type=sample(x = c(0,1),size = length(well),replace = T,prob = c( 0.2,0.8))) %>% mutate(set_type=if_else (set_type==0,"validation","training"))
+set.seed(1)
+
+complete_singlecell %<>% 
+  group_by(target) %>% 
+  mutate(set_type = sample(x = c(0,1),size = length(well),replace = T,prob = c( 0.2,0.8))) %>% 
+  mutate(set_type = if_else(set_type == 0,"validation","training"))
 
 #clean non ASCII characters from the drug targets
-complete_singlecell <- complete_singlecell %>% ungroup() %>% mutate(target=gsub("\\W","",target))
+complete_singlecell <- complete_singlecell %>% ungroup() %>% mutate(target = gsub("\\W","",target))
 ```
 
 #write down the non-masked training data
 
 ```{r}
 
-training_singlecell <-complete_singlecell %>% filter(set_type=="training") %>% ungroup()  %>% select(cell_code,everything()) %>% select(-plate_well,-set_type)
+training_singlecell <- 
+  complete_singlecell %>% 
+  filter(set_type == "training") %>% 
+  ungroup()  %>% 
+  select(cell_code,everything()) %>% 
+  select(-plate_well,-set_type)
 
-training_singlecell %>% write_delim("training_data.csv",delim=",")
+training_singlecell %>% write_delim("training_data.csv",delim = ",")
 
 ```
 
@@ -119,17 +129,29 @@ the mapping file to decode the pseudonymization is also kept for later reference
 
 ```{r}
 
-validation_singlecell <- complete_singlecell %>% filter(set_type=="validation") %>% ungroup()
+validation_singlecell <- complete_singlecell %>% filter(set_type == "validation") %>% ungroup()
 
 mapping_table_validation <- validation_singlecell %>% select(cell_id,plate,replicate,well,field,cell_code)
 
-validation_singlecell_coded <- validation_singlecell %>% select(cell_code,everything()) %>% select(-cell_id,-plate,-replicate,well,-field,-plate_well,-target,-set_type)
+validation_singlecell_coded <- 
+  validation_singlecell %>% 
+  select(cell_code,everything()) %>% 
+  select(-cell_id,-plate,-replicate,well,-field,-plate_well,-target,-set_type) %>%
+  group_by(well) %>% 
+  mutate(well_code = stringi::stri_rand_strings(1, 10, pattern = "[A-Za-z0-9]")) %>% 
+  ungroup() %>% 
+  select(well_code,everything(),-well)
 
-validation_singlecell_coded %<>% group_by(well) %>% mutate(well_code=stringi::stri_rand_strings(1, 10, pattern = "[A-Za-z0-9]")) %>% ungroup() %>% select(well_code,everything(),-well)
+validation_singlecell_coded %>% write_delim("validation_data.csv",delim = ",")
 
-validation_singlecell_coded %>% write_delim("validation_data.csv",delim=",")
+validation_singlecell %>% 
+  select(cell_code,plate,replicate,well,field,plate_well) %>% 
+  write_delim("validation_decoding.csv",delim = "\t")
 
-validation_singlecell %>% select(cell_code,plate,replicate,well,field,plate_well) %>% write_delim("validation_decoding.csv",delim="\t")
+# save the ground truth for later evaluation of the classification results
+cbind.data.frame("cell_code" = validation_singlecell_coded$cell_code,
+                 "truth" = validation_singlecell$target) %>% 
+  write_delim("ground_truth_real.csv",delim = ",")
 
 ```
 
@@ -139,57 +161,17 @@ validation_singlecell %>% select(cell_code,plate,replicate,well,field,plate_well
 
 validation_singlecell %>% 
   select(cell_code,cell_id,plate,replicate,well,field,plate_well) %>%
-  mutate(old_plate=gsub("\\w(\\d)","S\\1",plate)) %>% 
-  mutate(old_name=paste0("/data/single_cell_imagery/all/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
-  mutate(new_name=paste0("/data/single_cell_imagery/validation/single_cell_",cell_code,".tiff")) %>%
+  mutate(old_plate = gsub("\\w(\\d)","S\\1",plate)) %>% 
+  mutate(old_name = paste0("/data/single_cell_imagery/all/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
+  mutate(new_name = paste0("/data/single_cell_imagery/validation/single_cell_",cell_code,".tiff")) %>%
   write_delim("validation_file_translations.txt","\t")
   
 training_singlecell %>%
   ungroup() %>%
   select(cell_code,cell_id,plate,replicate,well,field,target) %>%
-  mutate(old_plate=gsub("\\w(\\d)","S\\1",plate)) %>% 
-  mutate(old_name=paste0("/data/single_cell_imagery/all/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
-  mutate(new_name=paste0("/data/single_cell_imagery/training/",target,"/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
+  mutate(old_plate = gsub("\\w(\\d)","S\\1",plate)) %>% 
+  mutate(old_name = paste0("/data/single_cell_imagery/all/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
+  mutate(new_name = paste0("/data/single_cell_imagery/training/",target,"/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
   write_delim("training_file_translations.txt","\t")
-```
-
-#test approach by a quick random forrest and save the resulting predictions 
-
-the test prediction is saved as well as the expected ground truth
-
-both files are then input into the scoring app
-
-```{r}
-
-data_mat_complete<-bind_rows(training_singlecell %>% select_if(is.numeric) %>% select(-cell_id,-replicate,-field),validation_singlecell_coded %>% select_if(is.numeric)) %>% as.matrix()
-
-todrop=c()
-for(i in 1:ncol(data_mat_complete)){
-  if(
-    mad(data_mat_complete[,i],na.rm = T)>0
-  ){
-    data_mat_complete[,i]=(data_mat_complete[,i]-median(data_mat_complete[,i],na.rm = T))/mad(data_mat_complete[,i],na.rm = T)
-  }else{
-    todrop=c(todrop,i)
-  }
-  
-}
-
-data_mat_pca<-princomp(data_mat_complete[,-todrop])$scores[,1:10]
-
-rm(data_mat_complete)
-
-data_mat_pca_training=data_mat_pca[1:nrow(training_singlecell),]
-data_mat_pca_validation=data_mat_pca[(nrow(training_singlecell)+1):nrow(data_mat_pca),]
-
-mdl<-randomForest::randomForest(data_mat_pca_training,y=factor(training_singlecell$target))
-
-prediction<-cbind.data.frame("cell_code"=validation_singlecell_coded$cell_code,"prediction"=predict(mdl,data_mat_pca_validation),"truth"=validation_singlecell$target)
-
-
-prediction %>% select(-prediction) %>% write_delim("ground_truth_real.csv",delim = ",")
-prediction %>% select(-truth) %>% write_delim("test_analysis.csv",delim = ",")
 
 ```
-
-

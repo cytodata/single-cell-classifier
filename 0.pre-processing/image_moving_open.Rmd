@@ -10,13 +10,15 @@ library(tidyverse)
 ## First we copy the files for single cell validation over to their home
 
 ```{r copy_the_validation_files}
-validation<-read_delim(file = "validation_file_translations.txt",delim="\t")
-copy_val<-function(x){
+
+validation <- read_delim(file = "validation_file_translations.txt",delim = "\t")
+copy_val <- function(x){
   file.copy(x$old_name, x$new_name)
-  return(data_frame("done"=TRUE))
+  return(data_frame("done" = TRUE))
 }
 
 validation %>% rowwise() %>% do(copy_val(.))
+
 ```
 
 

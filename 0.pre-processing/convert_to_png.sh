@@ -3,5 +3,3 @@ for f in `find . -name '*.tiff'`; do
 done
 
 find . -name "*tiff"  -exec rm {} \;
-
-

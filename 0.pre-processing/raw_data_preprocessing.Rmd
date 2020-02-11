@@ -91,7 +91,7 @@ complete_singlecell$cell_code <- rand_strings
 
 ```
 
-# devide randomly into 20 % validation and 80 % training data
+# divide randomly into 20 % validation and 80 % training data
 
 20/80 for each drug target that might contain different number of cells in differing number of wells
 

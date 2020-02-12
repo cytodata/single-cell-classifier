@@ -1,0 +1,177 @@
+---
+title: "split_data_and_create_translations"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(dplyr)
+library(RPostgreSQL)
+library(dbplyr)
+
+test_db <- src_postgres(
+  dbname = "example_db",
+  host = "some_server",
+  user = "user",
+  password = "passwd"
+)
+
+
+```
+
+# Get compound annotations
+
+```{r annotations}
+
+annotations <- read_delim("compund_annotations.txt",delim = "\t")
+
+```
+
+#filter for empirically found easy to analyze classes and get the corresponding well and plate information
+
+I purposefully selected only a subset of classes known to be phenotypically mostly distinct and that we know from other screens worked well.
+
+Likewise we only employ data from the wild-type cell line here.
+
+```{r}
+
+easy_classes <- c("adrenoceptor","dopamine receptor","MEK","Tubulin","Ca2+","Cdc25","rac1","eNOS","Topo II","AMPA","c-Myc","cell cycle","DNA_intercalation","EGFR","IGF-1 RTK","AMPA","CDK","DNA Metabolism","ROCK")
+
+
+wells_of_interest <- annotations %>% 
+  select(PlateName,Well,Selectivity_updated) %>% 
+  group_by(Selectivity_updated) %>% 
+  drop_na() %>% 
+  filter(Selectivity_updated %in% easy_classes) %>%
+  mutate(Well = gsub(pattern = "(\\w)0(\\d)",replacement = "\\1\\2" ,x = Well)) %>% 
+  do(head(.,5)) %>%
+  distinct() %>% 
+  ungroup() %>% 
+  unite(mywell,PlateName,Well)
+
+interesting <- wells_of_interest  %>% pull(mywell) %>% unique()
+
+
+annotations_selected <- annotations %>% 
+  select(PlateName,Well,Selectivity_updated) %>% 
+  group_by(Selectivity_updated) %>% 
+  drop_na() %>% 
+  do(head(.,5)) %>%
+  filter(Selectivity_updated %in% easy_classes) %>%
+  mutate(Well = gsub(pattern = "(\\w)0(\\d)",replacement = "\\1\\2" ,x = Well)) %>% 
+  rename(plate = PlateName,well = Well,target = Selectivity_updated)
+
+
+```
+
+#get the data
+
+I used a database interface but I would also share the csv file here. Maybe for a paper or such we could host it as a DB on the internet. For now I mask all details of our internal infrastructure.
+
+```{r}
+#complete_singlecell<-test_db %>% tbl("HC1047_single_cell_V1") %>% filter(plate_well %in% interesting) %>% collect(n=Inf)
+#complete_singlecell %>% write_delim("complete_singlecell_data_cytodata2019.csv",delim = ",")
+
+complete_singlecell <- read_delim("complete_singlecell_data_cytodata2019.csv",delim = ",")
+
+```
+
+# join data, annoations and a pseudonym code for each single cell thats left after filtering
+
+```{r}
+
+complete_singlecell <- complete_singlecell %>% left_join(annotations_selected)
+
+#create unique barcodes for each single cell measured by the row in the single cell dataframe
+rand_strings <- stringi::stri_rand_strings(nrow(complete_singlecell), 10, pattern = "[A-Za-z0-9]") %>% unique()
+
+complete_singlecell$cell_code <- rand_strings
+
+```
+
+# divide randomly into 20 % validation and 80 % training data
+
+20/80 for each drug target that might contain different number of cells in differing number of wells
+
+```{r}
+
+set.seed(1)
+
+complete_singlecell %<>% 
+  group_by(target) %>% 
+  mutate(set_type = sample(x = c(0,1),size = length(well),replace = T,prob = c( 0.2,0.8))) %>% 
+  mutate(set_type = if_else(set_type == 0,"validation","training"))
+
+#clean non ASCII characters from the drug targets
+complete_singlecell <- complete_singlecell %>% ungroup() %>% mutate(target = gsub("\\W","",target))
+```
+
+#write down the non-masked training data
+
+```{r}
+
+training_singlecell <- 
+  complete_singlecell %>% 
+  filter(set_type == "training") %>% 
+  ungroup()  %>% 
+  select(cell_code,everything()) %>% 
+  select(-plate_well,-set_type)
+
+training_singlecell %>% write_delim("training_data.csv",delim = ",")
+
+```
+
+#write down the validation data while masking their identity
+
+the mapping file to decode the pseudonymization is also kept for later reference
+
+```{r}
+
+validation_singlecell <- complete_singlecell %>% filter(set_type == "validation") %>% ungroup()
+
+mapping_table_validation <- validation_singlecell %>% select(cell_id,plate,replicate,well,field,cell_code)
+
+validation_singlecell_coded <- 
+  validation_singlecell %>% 
+  select(cell_code,everything()) %>% 
+  select(-cell_id,-plate,-replicate,well,-field,-plate_well,-target,-set_type) %>%
+  group_by(well) %>% 
+  mutate(well_code = stringi::stri_rand_strings(1, 10, pattern = "[A-Za-z0-9]")) %>% 
+  ungroup() %>% 
+  select(well_code,everything(),-well)
+
+validation_singlecell_coded %>% write_delim("validation_data.csv",delim = ",")
+
+validation_singlecell %>% 
+  select(cell_code,plate,replicate,well,field,plate_well) %>% 
+  write_delim("validation_decoding.csv",delim = "\t")
+
+# save the ground truth for later evaluation of the classification results
+cbind.data.frame("cell_code" = validation_singlecell_coded$cell_code,
+                 "truth" = validation_singlecell$target) %>% 
+  write_delim("ground_truth_real.csv",delim = ",")
+
+```
+
+#write down the mapping needed to rename all files in a pseudonymized fashion
+
+```{r}
+
+validation_singlecell %>% 
+  select(cell_code,cell_id,plate,replicate,well,field,plate_well) %>%
+  mutate(old_plate = gsub("\\w(\\d)","S\\1",plate)) %>% 
+  mutate(old_name = paste0("/data/single_cell_imagery/all/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
+  mutate(new_name = paste0("/data/single_cell_imagery/validation/single_cell_",cell_code,".tiff")) %>%
+  write_delim("validation_file_translations.txt","\t")
+  
+training_singlecell %>%
+  ungroup() %>%
+  select(cell_code,cell_id,plate,replicate,well,field,target) %>%
+  mutate(old_plate = gsub("\\w(\\d)","S\\1",plate)) %>% 
+  mutate(old_name = paste0("/data/single_cell_imagery/all/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
+  mutate(new_name = paste0("/data/single_cell_imagery/training/",target,"/211_11_17_X_Man_LOPAC_X5_LP_",old_plate,"_",replicate,"_",well,"_",field,"_",cell_id,".tiff")) %>%
+  write_delim("training_file_translations.txt","\t")
+
+```

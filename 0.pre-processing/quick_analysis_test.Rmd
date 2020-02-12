@@ -1,0 +1,50 @@
+---
+title: "quick random forrest check"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+# test approach by a quick random forrest and save the resulting predictions 
+
+the test prediction is saved as well as the expected ground truth
+
+both files are then input into the scoring app
+
+```{r}
+
+data_mat_complete <- 
+  bind_rows(training_singlecell %>% select_if(is.numeric) %>% select(-cell_id,-replicate,-field),validation_singlecell_coded %>% select_if(is.numeric)) %>% 
+  as.matrix()
+
+todrop = c()
+for (i in 1:ncol(data_mat_complete)) {
+  if (
+    mad(data_mat_complete[,i],na.rm = T) > 0
+  ) {
+    data_mat_complete[,i] = (data_mat_complete[,i] - median(data_mat_complete[,i],na.rm = T))/mad(data_mat_complete[,i],na.rm = T)
+  }else{
+    todrop = c(todrop,i)
+  }
+}
+
+data_mat_pca <- princomp(data_mat_complete[,-todrop])$scores[,1:10]
+
+rm(data_mat_complete)
+
+data_mat_pca_training = data_mat_pca[1:nrow(training_singlecell),]
+data_mat_pca_validation = data_mat_pca[(nrow(training_singlecell) + 1):nrow(data_mat_pca),]
+
+mdl <- randomForest::randomForest(data_mat_pca_training,y = factor(training_singlecell$target))
+
+prediction <- cbind.data.frame("cell_code" = validation_singlecell_coded$cell_code,"prediction" = predict(mdl,data_mat_pca_validation),"truth" = validation_singlecell$target)
+
+
+prediction %>% select(-prediction) %>% write_delim("ground_truth_real.csv",delim = ",")
+prediction %>% select(-truth) %>% write_delim("test_analysis.csv",delim = ",")
+
+```
+
+
